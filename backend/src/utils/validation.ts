@@ -37,7 +37,7 @@ export function validateCRMRecord(record: any): ValidationResult {
 
     // Handle multiple emails: If multiple emails exist, use first email, store remaining inside crm_note
     if (email.includes(',')) {
-      const emailList = email.split(',').map(e => e.trim()).filter(Boolean);
+      const emailList = email.split(',').map((e: string) => e.trim()).filter(Boolean);
       if (emailList.length > 0) {
         cleanEmail = emailList[0];
         if (emailList.length > 1) {
@@ -48,7 +48,7 @@ export function validateCRMRecord(record: any): ValidationResult {
 
     // Handle multiple phone numbers: If multiple phone numbers exist, use first phone, store remaining inside crm_note
     if (mobile.includes(',')) {
-      const mobileList = mobile.split(',').map(m => m.trim()).filter(Boolean);
+      const mobileList = mobile.split(',').map((m: string) => m.trim()).filter(Boolean);
       if (mobileList.length > 0) {
         cleanMobile = mobileList[0];
         if (mobileList.length > 1) {
