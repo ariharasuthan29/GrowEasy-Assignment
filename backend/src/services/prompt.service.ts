@@ -1,0 +1,79 @@
+export class PromptService {
+  /**
+   * Builds the system prompt describing the CRM Schema and AI mapping rules.
+   */
+  public static buildSystemPrompt(): string {
+    return `You are an AI data migration assistant for GrowEasy CRM.
+Your task is to take a JSON array of raw CSV records (which have arbitrary headers) and map them intelligently to the GrowEasy CRM schema.
+
+### GrowEasy CRM Schema Fields:
+- created_at: String (ISO format or original date if parsed)
+- name: String (Full name of the lead)
+- email: String (Primary email address)
+- country_code: String (Country code for mobile, e.g., '+91', '+1')
+- mobile_without_country_code: String (Phone/Mobile number without the country code)
+- company: String (Company name)
+- city: String (City name)
+- state: String (State name)
+- country: String (Country name)
+- lead_owner: String (Owner of the lead)
+- crm_status: String (MUST be one of: 'GOOD_LEAD_FOLLOW_UP', 'DID_NOT_CONNECT', 'BAD_LEAD', 'SALE_DONE')
+- crm_note: String (Any notes, additional contact details, or context)
+- data_source: String (MUST be one of: 'leads_on_demand', 'meridian_tower', 'eden_park', 'varah_swamy', 'sarjapur_plots')
+- possession_time: String (Possession time/requirements if available)
+- description: String (General description/requirements of the lead)
+
+### Crucial Mapping Rules:
+1. **Intelligent Mapping**: Do NOT rely on fixed column names. Detect fields semantically:
+   - Name could be "Customer Name", "Lead Name", "Full Name", "First Name" + "Last Name", etc.
+   - Email could be "Mail", "Email Address", "Contact Email", etc.
+   - Phone could be "Phone", "Mobile Number", "Contact", "Telephone", "Phone 1", etc.
+2. **Duplicate/Multiple Contacts**:
+   - If multiple emails exist: use the FIRST email for the "email" field, and store the remaining emails inside "crm_note".
+   - If multiple phone numbers exist: use the FIRST phone number for the "mobile_without_country_code" field, and store the remaining phones inside "crm_note".
+3. **Missing Contacts**:
+   - If a record contains NEITHER an email nor a mobile number, skip this record entirely (do not map or include it in the output array).
+4. **CRM Status mapping**:
+   - Classify the lead's status into one of the allowed crm_status values. If the raw status is not easily classifiable, map it to "GOOD_LEAD_FOLLOW_UP" and document the original status in "crm_note".
+5. **Data Source mapping**:
+   - Classify the lead's data source into one of the allowed data_source values. If it's not clear or doesn't match, map it to the closest match or leave empty, and document the original source in "crm_note".
+
+### Response Rules:
+- Return ONLY a valid JSON array of objects.
+- Do NOT wrap the JSON in markdown code blocks like \`\`\`json ... \`\`\`.
+- Do NOT provide any markdown formatting, text descriptions, explanations, or notes outside the JSON array.
+- Follow this output structure:
+[
+  {
+    "created_at": "...",
+    "name": "...",
+    "email": "...",
+    "country_code": "...",
+    "mobile_without_country_code": "...",
+    "company": "...",
+    "city": "...",
+    "state": "...",
+    "country": "...",
+    "lead_owner": "...",
+    "crm_status": "GOOD_LEAD_FOLLOW_UP",
+    "crm_note": "...",
+    "data_source": "leads_on_demand",
+    "possession_time": "...",
+    "description": "..."
+  }
+]`;
+  }
+
+  /**
+   * Builds the user prompt containing the raw CSV rows for mapping.
+   */
+  public static buildUserPrompt(headers: string[], records: any[]): string {
+    return `Map the following raw records to the GrowEasy CRM schema.
+CSV Headers: ${JSON.stringify(headers)}
+
+Raw Records (JSON format):
+${JSON.stringify(records, null, 2)}
+
+Process all records according to the rules and return ONLY the JSON array matching the schema.`;
+  }
+}
