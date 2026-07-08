@@ -1,6 +1,15 @@
 # GrowEasy CRM CSV Importer Frontend
 
-This is the Next.js 15 & TypeScript frontend client for the AI-Powered CSV Importer. It allows users to upload custom CSV sheets, parses and previews them locally using `PapaParse` and `@tanstack/react-table`, handles Confirm imports, and streams real-time migration progress (via custom Event Stream reader) showing the successfully mapped and skipped results.
+This is the Next.js 15 & TypeScript frontend client for the AI-Powered CSV Importer. It allows users to upload custom CSV sheets, parses and previews them locally, and streams real-time migration progress mapping them to the GrowEasy CRM schema.
+
+---
+
+## 🌐 Connected Endpoints
+
+- **Backend API (Render)**: `https://groweasy-assignment-liie.onrender.com`
+- **Frontend Client (Vercel)**: Fully prepared for deployment.
+
+---
 
 ## Tech Stack
 - **Framework**: Next.js 15 (App Router)
@@ -10,6 +19,8 @@ This is the Next.js 15 & TypeScript frontend client for the AI-Powered CSV Impor
 - **Drag & Drop**: `react-dropzone`
 - **Icons**: `lucide-react`
 - **Notifications**: `react-hot-toast`
+
+---
 
 ## Getting Started
 
@@ -28,9 +39,13 @@ This is the Next.js 15 & TypeScript frontend client for the AI-Powered CSV Impor
    ```
 
 ### Configuration
-Create a `.env.local` file in the `frontend/` root directory (template `.env.local` is already provided):
+For local development, copy `.env.example` into a new `.env.local` file:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000
+```
+For production, set the `NEXT_PUBLIC_API_URL` environment variable inside your Vercel Dashboard to:
+```env
+NEXT_PUBLIC_API_URL=https://groweasy-assignment-liie.onrender.com
 ```
 
 ### Scripts
@@ -50,3 +65,18 @@ NEXT_PUBLIC_API_URL=http://localhost:5000
   ```bash
   npm run lint
   ```
+
+---
+
+## 🚀 Vercel Production Deployment Instructions
+
+Deploy **ONLY** the `frontend` folder to Vercel:
+
+1. Import your project repository into Vercel.
+2. Under **Project Settings > General**, set the **Root Directory** field to **`frontend`** (or browse and select the `frontend` directory).
+3. Under **Environment Variables**, add:
+   - Key: `NEXT_PUBLIC_API_URL`
+   - Value: `https://groweasy-assignment-liie.onrender.com`
+4. Click **Deploy**.
+
+Vercel will successfully compile the frontend Next.js monorepo and link it directly to your Render API server.
