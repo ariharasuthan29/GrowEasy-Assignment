@@ -66,6 +66,14 @@ export class ImportController {
         const batchRecords = batches[i];
         
         try {
+          // Throttle requests if using Google Gemini (Free tier has a 15 RPM rate limit)
+          const apiKey = process.env.OPENAI_API_KEY || '';
+          const isGemini = apiKey.startsWith('AIzaSy') || apiKey.startsWith('AQ') || (!apiKey.startsWith('sk-') && apiKey !== 'your_openai_api_key_here' && apiKey.length > 10);
+          if (isGemini && i > 0) {
+            // 4.2 seconds delay prevents exceeding 14 requests per minute
+            await new Promise(resolve => setTimeout(resolve, 4200));
+          }
+
           // Send batch to AI with retry mechanism (up to 3 retries, starting with 1000ms delay)
           const result = await retryWithBackoff(async () => {
             return await AIService.mapBatchToCRM(headers, batchRecords);
