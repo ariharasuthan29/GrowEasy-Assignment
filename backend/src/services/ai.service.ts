@@ -1,12 +1,11 @@
-import { getOpenAIClient } from '../config/openai';
+import { ai } from '../config/gemini';
 import { PromptService } from './prompt.service';
 import { CRMRecord } from '../types/crm';
 import { validateCRMRecord } from '../utils/validation';
-import OpenAI from 'openai';
 
 export class AIService {
   /**
-   * Maps a batch of raw records to CRM schema using AI.
+   * Maps a batch of raw records to CRM schema using the official Google Gemini SDK.
    */
   public static async mapBatchToCRM(
     headers: string[],
@@ -16,43 +15,25 @@ export class AIService {
     const skipped: { record: any; reason: string }[] = [];
 
     try {
-      const apiKey = process.env.OPENAI_API_KEY || '';
-      
-      let client: OpenAI;
-      let model = 'gpt-4o-mini';
-
-      // Auto-detect Gemini API Key (Gemini keys start with AIzaSy or AQ, or do not start with sk-)
-      const isGemini = apiKey.startsWith('AIzaSy') || apiKey.startsWith('AQ') || (!apiKey.startsWith('sk-') && apiKey !== 'your_openai_api_key_here' && apiKey.length > 10);
-      if (isGemini) {
-        console.log('Gemini API key detected. Using Google Gemini OpenAI-compatibility layer.');
-        client = new OpenAI({
-          apiKey: apiKey,
-          baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
-        });
-        model = 'gemini-1.5-flash';
-      } else {
-        client = getOpenAIClient();
-      }
-
       const systemPrompt = PromptService.buildSystemPrompt();
       const userPrompt = PromptService.buildUserPrompt(headers, records);
 
-      const response = await client.chat.completions.create({
-        model: model,
-        temperature: 0, // Enforce deterministic response
-        response_format: { type: 'json_object' },
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ]
+      // Call the official Gemini SDK
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: `${systemPrompt}\n\n${userPrompt}`,
+        config: {
+          responseMimeType: 'application/json',
+          temperature: 0, // Enforce deterministic response mapping
+        }
       });
 
-      const responseText = response.choices[0]?.message?.content || '';
+      const responseText = response.text || '';
       if (!responseText) {
-        throw new Error('Empty response received from AI model.');
+        throw new Error('Empty response received from Gemini AI model.');
       }
 
-      // Parse AI response
+      // Parse Gemini response
       let parsedResponse: any;
       try {
         parsedResponse = JSON.parse(responseText);
@@ -82,13 +63,13 @@ export class AIService {
       for (let i = 0; i < records.length; i++) {
         const originalRecord = records[i];
         
-        // Find mapped record by matching some identifying attributes, or fall back to index matching
+        // Find mapped record by matching index
         const mappedRecord = recordsToValidate[i] || null;
 
         if (!mappedRecord) {
           skipped.push({
             record: originalRecord,
-            reason: 'AI mapping did not return a corresponding record for this row.'
+            reason: 'Gemini mapping did not return a corresponding record for this row.'
           });
           continue;
         }
@@ -105,13 +86,13 @@ export class AIService {
       }
 
     } catch (error: any) {
-      console.error('AI Service mapping error:', error);
+      console.error('Gemini Service mapping error:', error);
       // If the entire batch fails (e.g. API limit, invalid response format, etc.),
       // treat all records in this batch as skipped.
       for (const record of records) {
         skipped.push({
           record,
-          reason: `AI Batch Processing Failure: ${error.message || error}`
+          reason: `Gemini Batch Processing Failure: ${error.message || error}`
         });
       }
     }
