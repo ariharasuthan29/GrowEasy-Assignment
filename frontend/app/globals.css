@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --background: #030712; /* Slate-950 */
-  --foreground: #e2e8f0; /* Slate-200 */
+  --background: #F8F9FB; /* GrowEasy light gray background */
+  --foreground: #1E293B; /* Slate-800 text */
+  --primary: #FF7A45;    /* GrowEasy Orange */
+  --primary-hover: #E86833;
+  --secondary: #22C55E;  /* Success Green */
+  --card-bg: #FFFFFF;
 }
 
 body {
@@ -14,26 +18,37 @@ body {
   overflow-y: scroll;
 }
 
-/* Custom Scrollbar Styles for premium feel */
+/* Custom Scrollbar for clean white dashboard styling */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.4); /* Slate-900 transparent */
+  background: #F1F5F9;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.3); /* Slate-400 transparent */
+  background: #CBD5E1;
   border-radius: 9999px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5); /* Indigo-500 transparent */
+  background: var(--primary);
 }
 
-/* Table layout styling for premium display */
-th {
-  user-select: none;
+/* CSS keyframes for modern animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

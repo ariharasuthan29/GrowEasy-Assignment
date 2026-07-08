@@ -19,12 +19,10 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   return (
     <div className="flex flex-col items-center justify-center py-8 px-4 text-center animate-fade-in">
       <div className="relative flex items-center justify-center">
-        {/* Neon blur accent */}
-        <div className="absolute h-10 w-10 bg-indigo-500/20 blur-xl rounded-full" />
-        <Loader2 className={`${sizeClasses[size]} text-indigo-400 animate-spin`} />
+        <Loader2 className={`${sizeClasses[size]} text-[#FF7A45] animate-spin`} />
       </div>
       {message && (
-        <p className="mt-3 text-xs sm:text-sm text-slate-400 font-medium">
+        <p className="mt-3 text-xs sm:text-sm text-slate-500 font-medium">
           {message}
         </p>
       )}
