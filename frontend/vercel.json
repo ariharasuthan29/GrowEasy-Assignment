@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/import",
+      "destination": "https://groweasy-crm-backend.onrender.com/api/import"
+    }
+  ]
+}
