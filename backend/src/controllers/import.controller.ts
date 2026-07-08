@@ -37,8 +37,16 @@ export class ImportController {
         return;
       }
 
-      // 2. Split into batches of 20
-      const batchSize = 20;
+      // 2. Dynamically determine batch size based on record count to avoid hitting daily API limits.
+      // We target to keep the total number of batches around 10-12. Free-tier Gemini keys are limited to 20 RPD.
+      let batchSize = 20;
+      if (records.length > 200) {
+        batchSize = Math.ceil(records.length / 10);
+        // Cap at 200 records per batch to ensure precise mapping quality
+        if (batchSize > 200) {
+          batchSize = 200;
+        }
+      }
       const batches = chunkArray(records, batchSize);
       const totalBatches = batches.length;
 
