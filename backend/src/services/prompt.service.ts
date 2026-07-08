@@ -32,14 +32,25 @@ Your task is to take a JSON array of raw CSV records (which have arbitrary heade
    - If multiple emails exist: use the FIRST email for the "email" field, and store the remaining emails inside "crm_note".
    - If multiple phone numbers exist: use the FIRST phone number for the "mobile_without_country_code" field, and store the remaining phones inside "crm_note".
 3. **Missing Contacts**:
-   - If a record contains NEITHER an email nor a mobile number, skip this record entirely (do not map or include it in the output array).
+   - NEVER remove or omit a record from the output.
+   - Return EXACTLY ONE output object for EVERY input record.
+   - Preserve the same order as the input records.
+   - If a record has neither an email nor a mobile number, still return an object.
+   - Set:
+     - "email": ""
+     - "mobile_without_country_code": ""
+   - Add a clear explanation to "crm_note", for example:
+     "Missing both email and mobile. This record should be skipped during validation."
 4. **CRM Status mapping**:
    - Classify the lead's status into one of the allowed crm_status values. If the raw status is not easily classifiable, map it to "GOOD_LEAD_FOLLOW_UP" and document the original status in "crm_note".
 5. **Data Source mapping**:
    - Classify the lead's data source into one of the allowed data_source values. If it's not clear or doesn't match, map it to the closest match or leave empty, and document the original source in "crm_note".
 
 ### Response Rules:
-- Return ONLY a valid JSON array of objects.
+- The output array MUST contain exactly the same number of objects as the input array.
+- If the input contains N records, the output MUST contain exactly N mapped objects.
+- Never omit, remove, merge, or reorder records.
+- Return ONLY a valid JSON array.
 - Do NOT wrap the JSON in markdown code blocks like \`\`\`json ... \`\`\`.
 - Do NOT provide any markdown formatting, text descriptions, explanations, or notes outside the JSON array.
 - Follow this output structure:
@@ -68,12 +79,20 @@ Your task is to take a JSON array of raw CSV records (which have arbitrary heade
    * Builds the user prompt containing the raw CSV rows for mapping.
    */
   public static buildUserPrompt(headers: string[], records: any[]): string {
-    return `Map the following raw records to the GrowEasy CRM schema.
-CSV Headers: ${JSON.stringify(headers)}
+    return `Map ALL of the following records.
+
+IMPORTANT:
+- Process EVERY record.
+- Do NOT skip any record.
+- Do NOT remove any record.
+- Return EXACTLY ${records.length} JSON objects.
+- Preserve the same order as the input.
+- If a record cannot be mapped, still return an object with empty fields and explain why in crm_note.
+
+CSV Headers:
+${JSON.stringify(headers)}
 
 Raw Records (JSON format):
-${JSON.stringify(records, null, 2)}
-
-Process all records according to the rules and return ONLY the JSON array matching the schema.`;
+${JSON.stringify(records, null, 2)}`;
   }
 }
