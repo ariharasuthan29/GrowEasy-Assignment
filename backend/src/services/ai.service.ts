@@ -21,8 +21,9 @@ export class AIService {
       let client: OpenAI;
       let model = 'gpt-4o-mini';
 
-      // Auto-detect Gemini API Key (Gemini API keys typically start with AIzaSy)
-      if (apiKey.startsWith('AIzaSy')) {
+      // Auto-detect Gemini API Key (Gemini keys start with AIzaSy or AQ, or do not start with sk-)
+      const isGemini = apiKey.startsWith('AIzaSy') || apiKey.startsWith('AQ') || (!apiKey.startsWith('sk-') && apiKey !== 'your_openai_api_key_here' && apiKey.length > 10);
+      if (isGemini) {
         console.log('Gemini API key detected. Using Google Gemini OpenAI-compatibility layer.');
         client = new OpenAI({
           apiKey: apiKey,
