@@ -87,16 +87,38 @@ export class AIService {
 
     } catch (error: any) {
       console.error('Gemini Service mapping error:', error);
+      const friendlyError = AIService.formatAIError(error);
       // If the entire batch fails (e.g. API limit, invalid response format, etc.),
       // treat all records in this batch as skipped.
       for (const record of records) {
         skipped.push({
           record,
-          reason: `Gemini Batch Processing Failure: ${error.message || error}`
+          reason: friendlyError
         });
       }
     }
 
     return { imported, skipped };
+  }
+
+  /**
+   * Formats raw API error responses into clean, user-friendly strings.
+   */
+  private static formatAIError(error: any): string {
+    const errMsg = typeof error === 'string' ? error : error.message || JSON.stringify(error);
+    
+    if (errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED') || errMsg.includes('insufficient_quota')) {
+      return 'AI service rate limit reached. The Gemini API free quota has been exhausted. Please wait a few minutes and try again, or use a new API key/project with available quota.';
+    }
+    
+    if (errMsg.includes('401') || errMsg.includes('invalid_api_key') || errMsg.includes('Incorrect API key')) {
+      return 'Incorrect or invalid API key provided. Please verify your credentials in the environment configuration.';
+    }
+    
+    if (errMsg.includes('404')) {
+      return 'AI service endpoint not found (404). Please verify your model names and SDK configuration.';
+    }
+    
+    return `AI mapping engine encountered an error: ${error.message || errMsg}`;
   }
 }
