@@ -1,6 +1,6 @@
 import { ImportSummary, ProgressUpdate } from '../types/crm';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://groweasy-assignment-liie.onrender.com';
 
 /**
  * Uploads a CSV file and streams progress updates in real-time.
