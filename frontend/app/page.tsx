@@ -691,22 +691,22 @@ export default function Page() {
                   </div>
 
                   {/* Summary Metric Stats cards */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+                    <div className="bg-slate-50 p-2.5 sm:p-4 rounded-xl border border-slate-100">
                       <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Imported</p>
-                      <p className="text-lg font-extrabold text-slate-800 mt-0.5">{summary.totalImported}</p>
+                      <p className="text-sm sm:text-lg font-extrabold text-slate-800 mt-0.5">{summary.totalImported}</p>
                     </div>
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div className="bg-slate-50 p-2.5 sm:p-4 rounded-xl border border-slate-100">
                       <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Skipped</p>
-                      <p className={`text-lg font-extrabold mt-0.5 ${summary.totalSkipped > 0 ? 'text-rose-500' : 'text-slate-800'}`}>{summary.totalSkipped}</p>
+                      <p className={`text-sm sm:text-lg font-extrabold mt-0.5 ${summary.totalSkipped > 0 ? 'text-rose-500' : 'text-slate-800'}`}>{summary.totalSkipped}</p>
                     </div>
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div className="bg-slate-50 p-2.5 sm:p-4 rounded-xl border border-slate-100">
                       <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Duplicates</p>
-                      <p className="text-lg font-extrabold text-slate-800 mt-0.5">0</p>
+                      <p className="text-sm sm:text-lg font-extrabold text-slate-800 mt-0.5">0</p>
                     </div>
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div className="bg-slate-50 p-2.5 sm:p-4 rounded-xl border border-slate-100">
                       <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Time Taken</p>
-                      <p className="text-lg font-extrabold text-slate-800 mt-0.5 flex items-center justify-center gap-1 text-slate-500 font-mono text-sm">
+                      <p className="text-sm sm:text-lg font-extrabold text-slate-800 mt-0.5 flex items-center justify-center gap-1 text-slate-500 font-mono text-xs sm:text-sm">
                         <Clock className="h-4 w-4 text-[#FF7A45]" />
                         {batchProgress.total * 5}s
                       </p>

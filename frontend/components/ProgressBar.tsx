@@ -68,18 +68,18 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
       </div>
 
       {/* Metadata metrics footer (Rows processed, Batch count, Remaining rows) */}
-      <div className="grid grid-cols-3 gap-4 pt-2 text-center">
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 pt-2 text-center">
+        <div className="bg-slate-50 p-2 sm:p-3 rounded-xl border border-slate-100">
           <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Current Batch</p>
-          <p className="text-sm font-bold text-slate-700 font-mono mt-0.5">{currentBatch} <span className="text-slate-400 text-xs font-normal">/ {totalBatches}</span></p>
+          <p className="text-xs sm:text-sm font-bold text-slate-700 font-mono mt-0.5">{currentBatch} <span className="text-slate-400 text-[10px] sm:text-xs font-normal">/ {totalBatches}</span></p>
         </div>
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+        <div className="bg-slate-50 p-2 sm:p-3 rounded-xl border border-slate-100">
           <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Processed Rows</p>
-          <p className="text-sm font-bold text-slate-700 font-mono mt-0.5">~{processedRows}</p>
+          <p className="text-xs sm:text-sm font-bold text-slate-700 font-mono mt-0.5">~{processedRows}</p>
         </div>
-        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
+        <div className="bg-slate-50 p-2 sm:p-3 rounded-xl border border-slate-100">
           <p className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Remaining Rows</p>
-          <p className="text-sm font-bold text-slate-700 font-mono mt-0.5">~{remainingRows}</p>
+          <p className="text-xs sm:text-sm font-bold text-slate-700 font-mono mt-0.5">~{remainingRows}</p>
         </div>
       </div>
 
