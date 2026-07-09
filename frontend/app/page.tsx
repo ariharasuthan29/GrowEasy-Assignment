@@ -460,90 +460,129 @@ export default function Page() {
                 </div>
               </div>
 
-              {/* Responsive Lead Table grid */}
+              {/* Responsive Lead Card List (Mobile) & Table Grid (Desktop) */}
               {paginatedLeads.length > 0 ? (
-                <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
-                  <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full border-collapse text-left">
-                      <thead className="bg-slate-50 border-b border-slate-200">
-                        <tr>
-                          <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Lead Details</th>
-                          <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Contact Info</th>
-                          <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">CRM Status</th>
-                          <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Lead Owner</th>
-                          <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Source</th>
-                          <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {paginatedLeads.map((lead, idx) => (
-                          <tr key={idx} className="hover:bg-slate-50/40 transition-colors">
-                            
-                            {/* Lead & Company details */}
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex flex-col">
-                                <span className="font-semibold text-slate-800">{lead.name || 'Unknown Lead'}</span>
-                                <span className="text-[10px] text-slate-400 font-medium">{lead.company || 'No Company'}</span>
-                              </div>
-                            </td>
+                <div className="w-full space-y-4">
+                  
+                  {/* Mobile View: Lead Cards */}
+                  <div className="block sm:hidden space-y-3">
+                    {paginatedLeads.map((lead, idx) => (
+                      <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3 animate-fade-in">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <span className="font-bold text-slate-800 text-sm truncate block">{lead.name || 'Unknown Lead'}</span>
+                            <span className="text-[10px] text-slate-400 font-medium mt-0.5 truncate block">{lead.company || 'No Company'}</span>
+                          </div>
+                          <div className="shrink-0">
+                            {getStatusBadge(lead.crm_status)}
+                          </div>
+                        </div>
+                        
+                        <div className="text-xs text-slate-600 space-y-1.5 pt-2 border-t border-slate-100">
+                          <p className="flex items-center gap-1.5 truncate">
+                            <span className="text-slate-400">✉</span> {lead.email || '-'}
+                          </p>
+                          <p className="flex items-center gap-1.5 font-mono text-slate-500 truncate">
+                            <span className="text-slate-400">📞</span> {lead.country_code || ''} {lead.mobile_without_country_code || '-'}
+                          </p>
+                          <div className="flex items-center justify-between pt-1 text-[10px]">
+                            <span className="text-slate-400">Owner: <strong className="text-slate-600 font-medium">{lead.lead_owner || '-'}</strong></span>
+                            <span className="text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-md text-[9px]">
+                              {lead.data_source || '-'}
+                            </span>
+                          </div>
+                        </div>
 
-                            {/* Contact info details */}
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex flex-col text-xs text-slate-600 gap-0.5">
-                                <span className="flex items-center gap-1">
-                                  <span className="text-slate-400">✉</span> {lead.email || '-'}
-                                </span>
-                                <span className="flex items-center gap-1 font-mono text-slate-500">
-                                  <span className="text-slate-400">📞</span> {lead.country_code || ''} {lead.mobile_without_country_code || '-'}
-                                </span>
-                              </div>
-                            </td>
+                        <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                          <button className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" title="View details">
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          <button className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" title="Edit lead">
+                            <Edit className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteLead(lead.email)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                            title="Delete lead"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
 
-                            {/* CRM status badge */}
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              {getStatusBadge(lead.crm_status)}
-                            </td>
-
-                            {/* Lead owner details */}
-                            <td className="px-6 py-4 whitespace-nowrap text-xs text-slate-600 font-medium">
-                              {lead.lead_owner || '-'}
-                            </td>
-
-                            {/* Data Source details */}
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <span className="text-slate-500 text-xs font-semibold bg-slate-100 px-2 py-0.5 rounded-md">
-                                {lead.data_source || '-'}
-                              </span>
-                            </td>
-
-                            {/* Actions menu */}
-                            <td className="px-6 py-4 whitespace-nowrap text-xs text-slate-600">
-                              <div className="flex items-center gap-1">
-                                <button className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" title="View details">
-                                  <Eye className="h-4 w-4" />
-                                </button>
-                                <button className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" title="Edit lead">
-                                  <Edit className="h-4 w-4" />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteLead(lead.email)}
-                                  className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                                  title="Delete lead"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </td>
-
+                  {/* Desktop View: CRM Table */}
+                  <div className="hidden sm:block overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                    <div className="overflow-x-auto custom-scrollbar">
+                      <table className="w-full border-collapse text-left">
+                        <thead className="bg-slate-50 border-b border-slate-200">
+                          <tr>
+                            <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Lead Details</th>
+                            <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Contact Info</th>
+                            <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">CRM Status</th>
+                            <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Lead Owner</th>
+                            <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Source</th>
+                            <th className="px-6 py-4 text-xs font-semibold tracking-wider text-slate-500 uppercase">Actions</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {paginatedLeads.map((lead, idx) => (
+                            <tr key={idx} className="hover:bg-slate-50/40 transition-colors">
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex flex-col">
+                                  <span className="font-semibold text-slate-800">{lead.name || 'Unknown Lead'}</span>
+                                  <span className="text-[10px] text-slate-400 font-medium">{lead.company || 'No Company'}</span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <div className="flex flex-col text-xs text-slate-600 gap-0.5">
+                                  <span className="flex items-center gap-1">
+                                    <span className="text-slate-400">✉</span> {lead.email || '-'}
+                                  </span>
+                                  <span className="flex items-center gap-1 font-mono text-slate-500">
+                                    <span className="text-slate-400">📞</span> {lead.country_code || ''} {lead.mobile_without_country_code || '-'}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                {getStatusBadge(lead.crm_status)}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-slate-600 font-medium">
+                                {lead.lead_owner || '-'}
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <span className="text-slate-500 text-xs font-semibold bg-slate-100 px-2 py-0.5 rounded-md">
+                                  {lead.data_source || '-'}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap text-xs text-slate-600">
+                                <div className="flex items-center gap-1">
+                                  <button className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" title="View details">
+                                    <Eye className="h-4 w-4" />
+                                  </button>
+                                  <button className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors" title="Edit lead">
+                                    <Edit className="h-4 w-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteLead(lead.email)}
+                                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                                    title="Delete lead"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
 
                   {/* Pagination control footer bar */}
                   {totalPages > 1 && (
-                    <div className="flex items-center justify-between border-t border-slate-100 bg-slate-50 px-6 py-4">
+                    <div className="flex flex-col sm:flex-row gap-3 items-center justify-between border border-slate-200 rounded-2xl bg-slate-50/50 px-4 sm:px-6 py-4">
                       <span className="text-xs text-slate-500 font-medium">
                         Page {currentPage} of {totalPages}
                       </span>
@@ -567,7 +606,6 @@ export default function Page() {
                       </div>
                     </div>
                   )}
-
                 </div>
               ) : (
                 /* Empty placeholder card description */
